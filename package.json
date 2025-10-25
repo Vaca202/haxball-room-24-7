@@ -5,7 +5,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node index.js",
-    "postinstall": "PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer npx puppeteer browsers install chrome@stable"
+    "postinstall": "npx puppeteer browsers install chrome@stable && echo 'PUPPETEER_EXECUTABLE_PATH=/opt/render/.cache/puppeteer/chrome/linux-141.0.7390.122/chrome-linux64/chrome' > .env"
+
   },
   "dependencies": {
     "express": "^4.19.2",
