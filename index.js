@@ -74,7 +74,8 @@ app.listen(port, async () => {
   try {
     const url = `http://localhost:${port}/room.html`;
     const browser = await puppeteer.launch({
-  executablePath: puppeteer.executablePath(), // usa el binario descargado por puppeteer
+  executablePath: puppeteer.executablePath(), // deja que Puppeteer resuelva la ruta
+  headless: 'new',
   args: [
     '--no-sandbox',
     '--disable-setuid-sandbox',
