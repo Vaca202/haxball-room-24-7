@@ -74,16 +74,17 @@ app.listen(port, async () => {
   try {
     const url = `http://localhost:${port}/room.html`;
     const browser = await puppeteer.launch({
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-        "--no-zygote",
-        "--single-process"
-      ]
-      // headless: "new"  // (opcional en versiones recientes)
-    });
+  executablePath: puppeteer.executablePath(),  // usa el Chromium que se bajó
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+    "--no-zygote",
+    "--single-process"
+  ]
+});
+
 
     const page = await browser.newPage();
     page.on("console", (msg) => console.log("[room]", msg.text()));
