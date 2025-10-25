@@ -1,5 +1,5 @@
 const express = require("express");
-const puppeteer = require("puppeteer");
+const puppeteer = require('puppeteer');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -74,17 +74,16 @@ app.listen(port, async () => {
   try {
     const url = `http://localhost:${port}/room.html`;
     const browser = await puppeteer.launch({
-  executablePath: puppeteer.executablePath(),  // usa el Chromium que se bajó
+  executablePath: puppeteer.executablePath(), // usa el binario descargado por puppeteer
   args: [
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-gpu",
-    "--no-zygote",
-    "--single-process"
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-gpu',
+    '--no-zygote',
+    '--single-process'
   ]
 });
-
 
     const page = await browser.newPage();
     page.on("console", (msg) => console.log("[room]", msg.text()));
