@@ -1,3 +1,4 @@
+const path = require('path');
 const fs = require('fs');
 const express = require("express");
 const puppeteer = require('puppeteer');
@@ -7,7 +8,7 @@ const port = process.env.PORT || 3000;
 
 app.get("/ping", (req, res) => res.type("text/plain").send("ok"));
 
-app.get("/room.html", /* ... tu HTML tal cual ... */);
+app.get("/room.html", /* tu HTML igual */);
 
 app.listen(port, async () => {
   console.log("HTTP listo en puerto", port);
@@ -16,29 +17,24 @@ app.listen(port, async () => {
   try {
     const url = `http://localhost:${port}/room.html`;
 
-    // 1) Usamos el valor de ENV sin saltos/espacios
-    let execPath = (process.env.PUPPETEER_EXECUTABLE_PATH || '').trim();
-
-    // 2) Si esa ruta no existe, hacemos fallback a la de Puppeteer
-    if (!execPath || !fs.existsSync(execPath)) {
-      const autoPath = puppeteer.executablePath();
-      console.log("Ruta env NO válida. Fallback a puppeteer.executablePath():", autoPath);
-      execPath = autoPath;
-    } else {
-      console.log("Usando ruta de ENV para Chrome:", execPath);
+    // Intentar usar el path del Chrome instalado
+    let chromePath = process.env.PUPPETEER_EXECUTABLE_PATH?.trim();
+    if (!chromePath || !fs.existsSync(chromePath)) {
+      chromePath = '/opt/render/.cache/puppeteer/chrome/linux-141.0.7390.122/chrome-linux64/chrome';
+      console.log("Usando ruta forzada para Chrome:", chromePath);
     }
 
     const browser = await puppeteer.launch({
-      executablePath: execPath,
-      headless: 'new',
+      executablePath: chromePath,
+      headless: true,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
         '--no-zygote',
-        '--single-process',
-      ],
+        '--single-process'
+      ]
     });
 
     const page = await browser.newPage();
@@ -46,8 +42,8 @@ app.listen(port, async () => {
     await page.goto(url, { waitUntil: "domcontentloaded" });
 
     console.log("Puppeteer cargó /room.html y la sala debería estar levantada.");
-    // No cierres el browser para que la sala siga viva
   } catch (err) {
     console.error("Error lanzando Puppeteer:", err);
   }
 });
+
